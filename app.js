@@ -69,6 +69,12 @@ function collisionDetection() {
         ) {
           dy = -dy;
           b.status = 0;
+          score++;
+          if (score === brickRowCount * brickColumnCount) {
+            alert('You won!');
+            document.location.reload();
+            clearInterval(interval);
+          }
         }
       }
     }
@@ -99,12 +105,21 @@ const drawPaddle = () => {
   ctx.closePath();
 };
 
+// How might we keep score, hmmm?
+let score = 0;
+function drawScore() {
+  ctx.font = '12pt Arial';
+  ctx.fillStyle = '#660000';
+  ctx.fillText(`Score: ${score}`, 8, 20);
+}
+
 const draw = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBricks();
   drawBall();
   drawPaddle();
   collisionDetection();
+  drawScore();
   if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
     dx = -dx;
   }

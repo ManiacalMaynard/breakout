@@ -52,8 +52,20 @@ const draw = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBall();
   drawPaddle();
-  x + dx > canvas.width - ballRadius || x + dx < ballRadius ? (dx = -dx) : dx;
-  y + dy > canvas.height - ballRadius || y + dy < ballRadius ? (dy = -dy) : dy;
+  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+    dx = -dx;
+  }
+  if (y + dy < ballRadius) {
+    dy = -dy;
+  } else if (y + dy > canvas.height - ballRadius) {
+    if (x > paddleX && x < paddleX + paddleWidth) {
+      dy = -dy;
+    } else {
+      alert('Game Over, Man!');
+      document.location.reload();
+      clearInterval(interval); // for Chrome
+    }
+  }
   x += dx;
   y += dy;
   if (rightPressed) {
@@ -63,6 +75,6 @@ const draw = () => {
   }
 };
 
-setInterval(draw, 10);
+const interval = setInterval(draw, 10);
 
 console.log("Don't push me cause I'm close to the edge...");

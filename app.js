@@ -6,7 +6,7 @@ let y = canvas.height - 30;
 let dx = 2;
 let dy = -2;
 
-// User interaction defined here
+// User interaction defined here -- keyboard first
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
 function keyDownHandler(e) {
@@ -21,6 +21,14 @@ function keyUpHandler(e) {
     rightPressed = false;
   } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
     leftPressed = false;
+  }
+}
+// User interaction continued -- mouse control
+document.addEventListener('mousemove', mouseMoveHandler, false);
+function mouseMoveHandler(e) {
+  const relativeX = e.clientX - canvas.offsetLeft;
+  if (relativeX > 0 && relativeX < canvas.width) {
+    paddleX = relativeX - paddleWidth / 2;
   }
 }
 

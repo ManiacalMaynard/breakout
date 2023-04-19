@@ -81,7 +81,6 @@ function collisionDetection() {
           if (score === brickRowCount * brickColumnCount) {
             alert('You won!');
             document.location.reload();
-            clearInterval(interval);
           }
         }
       }
@@ -101,7 +100,7 @@ const drawBall = () => {
 
 // Here's the paddle stuff!
 const paddleHeight = 10;
-const paddleWidth = 75;
+const paddleWidth = 65;
 let rightPressed = false;
 let leftPressed = false;
 let paddleX = (canvas.width - paddleWidth) / 2;
@@ -120,14 +119,22 @@ function drawScore() {
   ctx.fillStyle = '#660000';
   ctx.fillText(`Score: ${score}`, 8, 20);
 }
+// And 3 attempts per play seems fair
+let tries = 3;
+function drawTries() {
+  ctx.font = '12pt Arial';
+  ctx.fillStyle = '#660000';
+  ctx.fillText(`Tries: ${tries}`, canvas.width - 65, 20);
+}
 
 const draw = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBricks();
   drawBall();
   drawPaddle();
-  collisionDetection();
   drawScore();
+  drawTries();
+  collisionDetection();
   if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
     dx = -dx;
   }
@@ -137,9 +144,18 @@ const draw = () => {
     if (x > paddleX && x < paddleX + paddleWidth) {
       dy = -dy;
     } else {
-      alert('Game Over, Man!');
-      document.location.reload();
-      clearInterval(interval); // for Chrome
+      tries--;
+      if (!tries) {
+        alert('Game Over, Man!');
+        document.location.reload();
+        requestAnimationFrame(draw); // for Chrome
+      } else {
+        x = canvas.width / 2;
+        y = canvas.height - 30;
+        dx = 2;
+        dy = -2;
+        paddleX = (canvas.width - paddleWidth) / 2;
+      }
     }
   }
   x += dx;
@@ -149,8 +165,9 @@ const draw = () => {
   } else if (leftPressed) {
     paddleX = Math.max(paddleX - 7, 0);
   }
+  requestAnimationFrame(draw);
 };
 
-const interval = setInterval(draw, 10);
+draw();
 
 console.log("Don't push me cause I'm close to the edge...");
